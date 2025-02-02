@@ -17,6 +17,7 @@ import (
 	"github.com/influxdata/telegraf/plugins/inputs/webhooks/artifactory"
 	"github.com/influxdata/telegraf/plugins/inputs/webhooks/filestack"
 	"github.com/influxdata/telegraf/plugins/inputs/webhooks/github"
+	"github.com/influxdata/telegraf/plugins/inputs/webhooks/gitlab"
 	"github.com/influxdata/telegraf/plugins/inputs/webhooks/mandrill"
 	"github.com/influxdata/telegraf/plugins/inputs/webhooks/papertrail"
 	"github.com/influxdata/telegraf/plugins/inputs/webhooks/particle"
@@ -39,6 +40,7 @@ type Webhooks struct {
 	Artifactory *artifactory.Webhook `toml:"artifactory"`
 	Filestack   *filestack.Webhook   `toml:"filestack"`
 	Github      *github.Webhook      `toml:"github"`
+	Gitlab      *gitlab.Webhook      `toml:"gitlab"`
 	Mandrill    *mandrill.Webhook    `toml:"mandrill"`
 	Papertrail  *papertrail.Webhook  `toml:"papertrail"`
 	Particle    *particle.Webhook    `toml:"particle"`
