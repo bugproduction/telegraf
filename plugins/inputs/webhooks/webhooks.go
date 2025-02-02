@@ -17,6 +17,7 @@ import (
 	"github.com/influxdata/telegraf/plugins/inputs/webhooks/artifactory"
 	"github.com/influxdata/telegraf/plugins/inputs/webhooks/filestack"
 	"github.com/influxdata/telegraf/plugins/inputs/webhooks/github"
+	"github.com/influxdata/telegraf/plugins/inputs/webhooks/gitlab"
 	"github.com/influxdata/telegraf/plugins/inputs/webhooks/mandrill"
 	"github.com/influxdata/telegraf/plugins/inputs/webhooks/papertrail"
 	"github.com/influxdata/telegraf/plugins/inputs/webhooks/particle"
@@ -45,6 +46,7 @@ type Webhooks struct {
 	WriteTimeout   config.Duration `toml:"write_timeout"`
 
 	Github      *github.GithubWebhook           `toml:"github"`
+	Gitlab      *gitlab.Webhook                 `toml:"gitlab"`
 	Filestack   *filestack.FilestackWebhook     `toml:"filestack"`
 	Mandrill    *mandrill.MandrillWebhook       `toml:"mandrill"`
 	Rollbar     *rollbar.RollbarWebhook         `toml:"rollbar"`

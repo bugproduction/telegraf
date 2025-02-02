@@ -63,6 +63,9 @@ See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
     #username = ""
     #password = ""
 
+  [inputs.webhooks.gitlab]
+    path = "/gitlab"
+
   [inputs.webhooks.mandrill]
     path = "/mandrill"
 
