@@ -266,3 +266,129 @@ func (t *pipelineEventType) NewMetric() telegraf.Metric {
 	n := metric.New(pipelineEvents, tags, fields, time.Now())
 	return n
 }
+
+// ########################################
+// Merge request event
+// ########################################
+
+const mergeRequestEvents = "merge_request_event"
+
+type label struct {
+	ID          int    `json:"id"`
+	Title       string `json:"title"`
+	Color       string `json:"color"`
+	ProjectID   int    `json:"project_id"`
+	CreatedAt   string `json:"created_at"`
+	UpdatedAt   string `json:"updated_at"`
+	Template    bool   `json:"template"`
+	Description string `json:"description"`
+	Type        string `json:"type"`
+	GroupID     int    `json:"group_id"`
+}
+
+type mrObjectAttributes struct {
+	ID                          int         `json:"id"`
+	Iid                         int         `json:"iid"`
+	TargetBranch                string      `json:"target_branch"`
+	SourceBranch                string      `json:"source_branch"`
+	SourceProjectID             int         `json:"source_project_id"`
+	AuthorID                    int         `json:"author_id"`
+	AssigneeIDs                 []int       `json:"assignee_ids"`
+	AssigneeID                  int         `json:"assignee_id"` // Can be null
+	ReviewerIDs                 []int       `json:"reviewer_ids"`
+	Title                       string      `json:"title"`
+	CreatedAt                   string      `json:"created_at"`
+	UpdatedAt                   string      `json:"updated_at"`
+	LastEditedAt                string      `json:"last_edited_at"`    // Can be null
+	LastEditedByID              int         `json:"last_edited_by_id"` // Can be null
+	MilestoneID                 int         `json:"milestone_id"`      // Can be null
+	StateID                     int         `json:"state_id"`
+	State                       string      `json:"state"`
+	BlockingDiscussionsResolved bool        `json:"blocking_discussions_resolved"`
+	WorkInProgress              bool        `json:"work_in_progress"`
+	Draft                       bool        `json:"draft"`
+	FirstContribution           bool        `json:"first_contribution"`
+	MergeStatus                 string      `json:"merge_status"`
+	TargetProjectID             int         `json:"target_project_id"`
+	Description                 string      `json:"description"`
+	PreparedAt                  string      `json:"prepared_at"`
+	TotalTimeSpent              int         `json:"total_time_spent"`
+	TimeChange                  int         `json:"time_change"`
+	HumanTotalTimeSpent         string      `json:"human_total_time_spent"` // Can be null
+	HumanTimeChange             string      `json:"human_time_change"`      // Can be null
+	HumanTimeEstimate           string      `json:"human_time_estimate"`    // Can be null
+	URL                         string      `json:"url"`
+	Source                      project     `json:"source"`
+	Target                      project     `json:"target"`
+	LastCommit                  shortCommit `json:"last_commit"`
+	Labels                      []label     `json:"labels"`
+	Action                      string      `json:"action"`
+	DetailedMergeStatus         string      `json:"detailed_merge_status"`
+}
+
+type updatedByID struct {
+	Previous int `json:"previous"`
+	Current  int `json:"current"`
+}
+
+type draft struct {
+	Previous bool `json:"previous"`
+	Current  bool `json:"current"`
+}
+
+type updatedAt struct {
+	Previous string `json:"previous"`
+	Current  string `json:"current"`
+}
+
+type labels struct {
+	Previous []label `json:"previous"`
+	Current  []label `json:"current"`
+}
+
+type changes struct {
+	UpdatedByID    updatedByID `json:"updated_by_id"`
+	Draft          draft       `json:"draft"`
+	UpdatedAt      updatedAt   `json:"updated_at"`
+	Labels         labels      `json:"labels"`
+	LastEditedAt   updatedAt   `json:"last_edited_at"`
+	LastEditedByID updatedByID `json:"last_edited_by_id"`
+}
+
+type mergeRequestEventType struct {
+	ObjectKind       string             `json:"object_kind"`
+	EventType        string             `json:"event_type"`
+	User             user               `json:"user"`
+	Project          project            `json:"project"`
+	Repository       repository         `json:"repository"`
+	ObjectAttributes mrObjectAttributes `json:"object_attributes"`
+	Labels           []label            `json:"labels"`
+	Changes          changes            `json:"changes"`
+	Assignees        []user             `json:"assignees"`
+	Reviewers        []user             `json:"reviewers"`
+}
+
+func (t *mergeRequestEventType) NewMetric() telegraf.Metric {
+	tags := map[string]string{
+		"project_id":                    strconv.Itoa(t.Project.ID),
+		"project_name":                  t.Project.Name,
+		"user_id":                       strconv.Itoa(t.User.ID),
+		"user":                          t.User.Name,
+		"target_branch":                 t.ObjectAttributes.TargetBranch,
+		"author_id":                     strconv.Itoa(t.ObjectAttributes.AuthorID),
+		"blocking_discussions_resolved": strconv.FormatBool(t.ObjectAttributes.BlockingDiscussionsResolved),
+		"work_in_progress":              strconv.FormatBool(t.ObjectAttributes.WorkInProgress),
+		"draft":                         strconv.FormatBool(t.ObjectAttributes.Draft),
+		"detailed_merge_status":         t.ObjectAttributes.DetailedMergeStatus,
+	}
+	fields := map[string]interface{}{
+		"mr_id":         t.ObjectAttributes.ID,
+		"title":         t.ObjectAttributes.Title,
+		"source_branch": t.ObjectAttributes.SourceBranch,
+		"description":   t.ObjectAttributes.Description,
+		"created_at":    t.ObjectAttributes.CreatedAt,
+		"updated_at":    t.Changes.UpdatedAt,
+	}
+	n := metric.New(mergeRequestEvents, tags, fields, time.Now())
+	return n
+}

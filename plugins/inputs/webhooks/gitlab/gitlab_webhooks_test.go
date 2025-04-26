@@ -15,6 +15,7 @@ var testDataPath = "testdata/"
 
 var testJobHookHeader = "Job Hook"
 var testPipelineHookHeader = "Pipeline Hook"
+var testMergeRequestHookHeader = "Merge Request Hook"
 
 func readFile(t *testing.T, filePath string) string {
 	data, err := os.ReadFile(filePath)
@@ -51,4 +52,12 @@ func TestProjectJobHook(t *testing.T) {
 
 func TestProjectPipelineHook(t *testing.T) {
 	GitlabWebhookRequest(t, testDataPath+"pipeline_hook.json", testPipelineHookHeader, "pipeline_event")
+}
+
+// ########################################
+// Pipeline hook event
+// ########################################
+
+func TestMergeRequestHook(t *testing.T) {
+	GitlabWebhookRequest(t, testDataPath+"merge_req_hook.json", testMergeRequestHookHeader, "merge_request_event")
 }

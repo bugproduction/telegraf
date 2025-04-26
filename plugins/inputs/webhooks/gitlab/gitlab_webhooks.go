@@ -28,16 +28,23 @@ func (gl *Webhook) eventHandler(w http.ResponseWriter, r *http.Request) {
 	const gitlabHeaderToken = "X-Gitlab-Token"
 
 	var headers = map[string]event{
-		"Job Hook":      &jobEventType{},
-		"Pipeline Hook": &pipelineEventType{},
+		"Job Hook":           &jobEventType{},
+		"Pipeline Hook":      &pipelineEventType{},
+		"Merge Request Hook": &mergeRequestEventType{},
 	}
 
 	defer r.Body.Close()
 
 	eventType := r.Header.Get(gitlabHeaderEvent)
+	if eventType == "" {
+		gl.log.Infof("No %s key found in headers.", gitlabHeaderEvent)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
 	ev := headers[eventType]
 	if ev == nil {
-		gl.log.Infof("No %s found in headers.", gitlabHeaderEvent)
+		gl.log.Infof("Unknown %s value found in headers '%s'.", gitlabHeaderEvent, eventType)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
