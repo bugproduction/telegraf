@@ -253,15 +253,15 @@ func (t *pipelineEventType) NewMetric() telegraf.Metric {
 		"user":            t.User.Username,
 	}
 	fields := map[string]interface{}{
-		"pipeline_id":     strconv.Itoa(t.ObjectAttributes.ID),
-		"pipeline_name":   t.ObjectAttributes.Name,
-		"ref":             t.ObjectAttributes.Ref,
-		"before_sha":      t.ObjectAttributes.BeforeSha,
-		"sha":             t.ObjectAttributes.Sha,
-		"job_created_at":  t.ObjectAttributes.CreatedAt,
-		"job_finished_at": t.ObjectAttributes.FinishedAt, // not there
-		"job_duration":    t.ObjectAttributes.Duration,   // not there
-		"url":             t.ObjectAttributes.URL,
+		"pipeline_id":          strconv.Itoa(t.ObjectAttributes.ID),
+		"pipeline_name":        t.ObjectAttributes.Name,
+		"ref":                  t.ObjectAttributes.Ref,
+		"before_sha":           t.ObjectAttributes.BeforeSha,
+		"sha":                  t.ObjectAttributes.Sha,
+		"pipeline_created_at":  t.ObjectAttributes.CreatedAt,
+		"pipeline_finished_at": t.ObjectAttributes.FinishedAt,
+		"pipeline_duration":    t.ObjectAttributes.Duration,
+		"url":                  t.ObjectAttributes.URL,
 	}
 	n := metric.New(pipelineEvents, tags, fields, time.Now())
 	return n

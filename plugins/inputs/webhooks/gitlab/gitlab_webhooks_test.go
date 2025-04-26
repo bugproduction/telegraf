@@ -12,6 +12,7 @@ import (
 )
 
 var testDataPath = "testdata/"
+var correctTestPassword = "thisiscorrect"
 
 var testJobHookHeader = "Job Hook"
 var testPipelineHookHeader = "Pipeline Hook"
@@ -38,12 +39,39 @@ func GitlabWebhookRequest(t *testing.T, input string, xGitlabEvent string, measu
 	acc.HasMeasurement(measurement)
 }
 
+func GitlabWebhookRequestToken(t *testing.T, input string, xGitlabEvent string, measurement string, token string) int {
+	var acc testutil.Accumulator
+	gl := &Webhook{Path: "/gitlab", acc: &acc, log: testutil.Logger{}, Secret: correctTestPassword}
+	jsonString := readFile(t, input)
+	req, err := http.NewRequest("POST", "/gitlab", strings.NewReader(jsonString))
+	require.NoError(t, err)
+	req.Header.Add("X-Gitlab-Event", xGitlabEvent)
+	req.Header.Add("X-Gitlab-Token", token)
+	w := httptest.NewRecorder()
+	gl.eventHandler(w, req)
+	return w.Code
+}
+
 // ########################################
 // Job hook event
 // ########################################
 
 func TestProjectJobHook(t *testing.T) {
 	GitlabWebhookRequest(t, testDataPath+"job_hook.json", testJobHookHeader, "job_event")
+}
+
+func TestProjectJobHookCorrectToken(t *testing.T) {
+	code := GitlabWebhookRequestToken(t, testDataPath+"job_hook.json", testJobHookHeader, "job_event", correctTestPassword)
+	if code != http.StatusOK {
+		t.Errorf("POST with right password returned HTTP status code %v.\nExpected %v", code, http.StatusOK)
+	}
+}
+
+func TestProjectJobHookWrongToken(t *testing.T) {
+	code := GitlabWebhookRequestToken(t, testDataPath+"job_hook.json", testJobHookHeader, "job_event", "thisiswrong")
+	if code == http.StatusOK {
+		t.Errorf("POST with wrong password returned HTTP status code %v.\nExpected failure", code)
+	}
 }
 
 // ########################################
