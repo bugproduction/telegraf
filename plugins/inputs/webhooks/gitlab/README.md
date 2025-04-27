@@ -19,6 +19,8 @@ Fields
 - 'fieldKey' = `fieldValue` type
 ```
 
+The events will be stored in `gitlab_webhooks` measurement. 
+
 ### [Pipeline events](https://docs.gitlab.com/user/project/integrations/webhook_events/#pipeline-events)
 
 Tags:
