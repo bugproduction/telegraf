@@ -59,7 +59,7 @@ func (t *jobEventType) NewMetric() telegraf.Metric {
 		"project_id":         strconv.Itoa(t.Project.ID),
 		"project_name":       t.Project.Name,
 		"user_id":            strconv.Itoa(t.User.ID),
-		"user":               t.User.Name,
+		"user_name":          t.User.Name,
 		"runner_id":          strconv.Itoa(t.Runner.ID),
 		"runner_description": t.Runner.Description,
 		"environment":        t.Environment.Name,
@@ -177,7 +177,7 @@ type objectAttributes struct {
 	Ref        string     `json:"ref"`
 	Tag        bool       `json:"tag"`
 	Sha        string     `json:"sha"`
-	BeforeSha  string     `json:"before_Sha"`
+	BeforeSha  string     `json:"before_sha"`
 	Source     string     `json:"source"`
 	Status     string     `json:"status"`
 	Stages     []string   `json:"stages"`
@@ -250,7 +250,7 @@ func (t *pipelineEventType) NewMetric() telegraf.Metric {
 		"project_id":      strconv.Itoa(t.Project.ID),
 		"project_name":    t.Project.Name,
 		"user_id":         strconv.Itoa(t.User.ID),
-		"user":            t.User.Username,
+		"user_name":       t.User.Username,
 	}
 	fields := map[string]interface{}{
 		"pipeline_id":          strconv.Itoa(t.ObjectAttributes.ID),
@@ -373,7 +373,7 @@ func (t *mergeRequestEventType) NewMetric() telegraf.Metric {
 		"project_id":                    strconv.Itoa(t.Project.ID),
 		"project_name":                  t.Project.Name,
 		"user_id":                       strconv.Itoa(t.User.ID),
-		"user":                          t.User.Name,
+		"user_name":                     t.User.Name,
 		"target_branch":                 t.ObjectAttributes.TargetBranch,
 		"author_id":                     strconv.Itoa(t.ObjectAttributes.AuthorID),
 		"blocking_discussions_resolved": strconv.FormatBool(t.ObjectAttributes.BlockingDiscussionsResolved),
@@ -387,7 +387,8 @@ func (t *mergeRequestEventType) NewMetric() telegraf.Metric {
 		"source_branch": t.ObjectAttributes.SourceBranch,
 		"description":   t.ObjectAttributes.Description,
 		"created_at":    t.ObjectAttributes.CreatedAt,
-		"updated_at":    t.Changes.UpdatedAt,
+		"updated_at":    t.ObjectAttributes.UpdatedAt,
+		"url":           t.ObjectAttributes.URL,
 	}
 	n := metric.New(mergeRequestEvents, tags, fields, time.Now())
 	return n
