@@ -22,6 +22,7 @@ Fields
 ### [Pipeline events](https://docs.gitlab.com/user/project/integrations/webhook_events/#pipeline-events)
 
 Tags:
+- 'event' = `pipeline_event` string
 - 'pipeline_status' = `object_attributes.status` string
 - 'project_id' =  `project.id` int
 - 'project_name' = `project.name` string
@@ -43,6 +44,7 @@ Fields:
 ### [Job events](https://docs.gitlab.com/user/project/integrations/webhook_events/#job-events)
 
 Tags:
+- 'event' = `job_event` string
 - 'job_name' = `build_name` string
 - 'job_stage' = `build_stage` string
 - 'job_status' = `build_status` string
@@ -73,6 +75,7 @@ Fields:
 ### [Merge request events](https://docs.gitlab.com/user/project/integrations/webhook_events/#merge-request-events)
 
 Tags:
+- 'event' = `merge_request_event` string
 - 'project_id' = `project.id` int
 - 'project_name' = `project.name` string
 - 'user_id' = `user.id` int

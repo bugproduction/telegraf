@@ -16,6 +16,7 @@ type event interface {
 // Job Hook event
 // ########################################
 
+const gitlabWebhooks = "gitlab_webhooks"
 const jobEvents = "job_event"
 
 type jobEventType struct {
@@ -49,6 +50,7 @@ type jobEventType struct {
 
 func (t *jobEventType) NewMetric() telegraf.Metric {
 	tags := map[string]string{
+		"event":              jobEvents,
 		"job_name":           t.BuildName,
 		"job_stage":          t.BuildStage,
 		"job_status":         t.BuildStatus,
@@ -71,12 +73,12 @@ func (t *jobEventType) NewMetric() telegraf.Metric {
 		"before_sha":          t.BeforeSha,
 		"sha":                 t.Sha,
 		"job_created_at":      t.BuildCreatedAt,
-		"job_started_at":      t.BuildStartedAt,      // not there
-		"job_finished_at":     t.BuildFinishedAt,     // not there
-		"job_duration":        t.BuildDuration,       // not there
-		"job_queued_duration": t.BuildQueuedDuration, // not there
+		"job_started_at":      t.BuildStartedAt,
+		"job_finished_at":     t.BuildFinishedAt,
+		"job_duration":        t.BuildDuration,
+		"job_queued_duration": t.BuildQueuedDuration,
 	}
-	n := metric.New(jobEvents, tags, fields, time.Now())
+	n := metric.New(gitlabWebhooks, tags, fields, time.Now())
 	return n
 }
 
@@ -246,6 +248,7 @@ type artifactsFile struct {
 
 func (t *pipelineEventType) NewMetric() telegraf.Metric {
 	tags := map[string]string{
+		"event":           pipelineEvents,
 		"pipeline_status": t.ObjectAttributes.Status,
 		"project_id":      strconv.Itoa(t.Project.ID),
 		"project_name":    t.Project.Name,
@@ -263,7 +266,7 @@ func (t *pipelineEventType) NewMetric() telegraf.Metric {
 		"pipeline_duration":    t.ObjectAttributes.Duration,
 		"url":                  t.ObjectAttributes.URL,
 	}
-	n := metric.New(pipelineEvents, tags, fields, time.Now())
+	n := metric.New(gitlabWebhooks, tags, fields, time.Now())
 	return n
 }
 
@@ -370,6 +373,7 @@ type mergeRequestEventType struct {
 
 func (t *mergeRequestEventType) NewMetric() telegraf.Metric {
 	tags := map[string]string{
+		"event":                         mergeRequestEvents,
 		"project_id":                    strconv.Itoa(t.Project.ID),
 		"project_name":                  t.Project.Name,
 		"user_id":                       strconv.Itoa(t.User.ID),
@@ -390,6 +394,6 @@ func (t *mergeRequestEventType) NewMetric() telegraf.Metric {
 		"updated_at":    t.ObjectAttributes.UpdatedAt,
 		"url":           t.ObjectAttributes.URL,
 	}
-	n := metric.New(mergeRequestEvents, tags, fields, time.Now())
+	n := metric.New(gitlabWebhooks, tags, fields, time.Now())
 	return n
 }

@@ -12,8 +12,8 @@ import (
 )
 
 var testDataPath = "testdata/"
-var correctTestPassword = "thisiscorrect"
-
+var testPassword = "thisiscorrect"
+var testGitlab_webhooks = "gitlab_webhook"
 var testJobHookHeader = "Job Hook"
 var testPipelineHookHeader = "Pipeline Hook"
 var testMergeRequestHookHeader = "Merge Request Hook"
@@ -24,7 +24,7 @@ func readFile(t *testing.T, filePath string) string {
 	return string(data)
 }
 
-func GitlabWebhookRequest(t *testing.T, input string, xGitlabEvent string, measurement string) {
+func GitlabWebhookRequest(t *testing.T, input string, xGitlabEvent string) {
 	var acc testutil.Accumulator
 	gl := &Webhook{Path: "/gitlab", acc: &acc, log: testutil.Logger{}}
 	jsonString := readFile(t, input)
@@ -36,12 +36,12 @@ func GitlabWebhookRequest(t *testing.T, input string, xGitlabEvent string, measu
 	if w.Code != http.StatusOK {
 		t.Errorf("POST returned HTTP status code %v.\nExpected %v", w.Code, http.StatusOK)
 	}
-	acc.HasMeasurement(measurement)
+	acc.HasMeasurement(testGitlab_webhooks)
 }
 
-func GitlabWebhookRequestToken(t *testing.T, input string, xGitlabEvent string, measurement string, token string) int {
+func GitlabWebhookRequestToken(t *testing.T, input string, xGitlabEvent string, token string) int {
 	var acc testutil.Accumulator
-	gl := &Webhook{Path: "/gitlab", acc: &acc, log: testutil.Logger{}, Secret: correctTestPassword}
+	gl := &Webhook{Path: "/gitlab", acc: &acc, log: testutil.Logger{}, Secret: testPassword}
 	jsonString := readFile(t, input)
 	req, err := http.NewRequest("POST", "/gitlab", strings.NewReader(jsonString))
 	require.NoError(t, err)
@@ -57,18 +57,18 @@ func GitlabWebhookRequestToken(t *testing.T, input string, xGitlabEvent string, 
 // ########################################
 
 func TestProjectJobHook(t *testing.T) {
-	GitlabWebhookRequest(t, testDataPath+"job_hook.json", testJobHookHeader, "job_event")
+	GitlabWebhookRequest(t, testDataPath+"job_hook.json", testJobHookHeader)
 }
 
 func TestProjectJobHookCorrectToken(t *testing.T) {
-	code := GitlabWebhookRequestToken(t, testDataPath+"job_hook.json", testJobHookHeader, "job_event", correctTestPassword)
+	code := GitlabWebhookRequestToken(t, testDataPath+"job_hook.json", testJobHookHeader, testPassword)
 	if code != http.StatusOK {
 		t.Errorf("POST with right password returned HTTP status code %v.\nExpected %v", code, http.StatusOK)
 	}
 }
 
 func TestProjectJobHookWrongToken(t *testing.T) {
-	code := GitlabWebhookRequestToken(t, testDataPath+"job_hook.json", testJobHookHeader, "job_event", "thisiswrong")
+	code := GitlabWebhookRequestToken(t, testDataPath+"job_hook.json", testJobHookHeader, "thisiswrong")
 	if code == http.StatusOK {
 		t.Errorf("POST with wrong password returned HTTP status code %v.\nExpected failure", code)
 	}
@@ -79,7 +79,7 @@ func TestProjectJobHookWrongToken(t *testing.T) {
 // ########################################
 
 func TestProjectPipelineHook(t *testing.T) {
-	GitlabWebhookRequest(t, testDataPath+"pipeline_hook.json", testPipelineHookHeader, "pipeline_event")
+	GitlabWebhookRequest(t, testDataPath+"pipeline_hook.json", testPipelineHookHeader)
 }
 
 // ########################################
@@ -87,5 +87,5 @@ func TestProjectPipelineHook(t *testing.T) {
 // ########################################
 
 func TestMergeRequestHook(t *testing.T) {
-	GitlabWebhookRequest(t, testDataPath+"merge_req_hook.json", testMergeRequestHookHeader, "merge_request_event")
+	GitlabWebhookRequest(t, testDataPath+"merge_req_hook.json", testMergeRequestHookHeader)
 }
