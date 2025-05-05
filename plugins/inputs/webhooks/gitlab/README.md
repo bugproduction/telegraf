@@ -19,7 +19,7 @@ Fields
 - 'fieldKey' = `fieldValue` type
 ```
 
-The events will be stored in `gitlab_webhooks` measurement. 
+The events will be stored in `gitlab_webhooks` measurement.
 
 ### [Pipeline events](https://docs.gitlab.com/user/project/integrations/webhook_events/#pipeline-events)
 
@@ -37,8 +37,8 @@ Fields:
 - 'ref' = `object_attributes.ref` string
 - 'before_sha' = `object_attributes.before_sha` string
 - 'sha' = `object_attributes.sha` string
-- 'pipeline_created_at' = `object_attributes.created_at` string
-- 'pipeline_finished_at' = `object_attributes.finished_at` string
+- 'pipeline_created_at' = `object_attributes.created_at` time
+- 'pipeline_finished_at' = `object_attributes.finished_at` time
 - 'pipeline_duration' = `object_attributes.duration` int
 - 'url' = `object_attributes.url` string
 
@@ -68,9 +68,9 @@ Fields:
 - 'job_id' = `build_id` int
 - 'before_sha' = `before_sha` string
 - 'sha' = `sha` string
-- 'job_created_at' = `build_created_at` string
-- 'job_started_at' = `build_started_at` string
-- 'job_finished_at' = `build_finished_at` string
+- 'job_created_at' = `build_created_at` time
+- 'job_started_at' = `build_started_at` time
+- 'job_finished_at' = `build_finished_at` time
 - 'job_duration' = `build_duration` float64
 - 'job_queued_duration' = `build_queued_duration` float64
 
@@ -94,7 +94,6 @@ Fields:
 - 'title' = `object_attributes.title` string
 - 'source_branch' = `object_attributes.source_branch` string
 - 'description' = `object_attributes.description` string
-- 'created_at' = `object_attributes.created_at` string
-- 'updated_at' = `object_attributes.updated_at` string
+- 'created_at' = `object_attributes.created_at` time
+- 'updated_at' = `object_attributes.updated_at` time
 - 'url' = `object_attributes.url` string
-
