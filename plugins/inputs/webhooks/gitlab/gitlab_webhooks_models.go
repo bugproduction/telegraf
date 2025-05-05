@@ -19,12 +19,6 @@ type event interface {
 const gitlabWebhooks = "gitlab_webhooks"
 const jobEvents = "job_event"
 
-func gitLabTimeToTime(timestamp string) time.Time {
-	const timeformat = "2006-01-02 15:04:05 MST"
-	val, _ := time.Parse(timeformat, timestamp)
-	return val
-}
-
 type jobEventType struct {
 	ObjectKind          string      `json:"object_kind"`
 	Ref                 string      `json:"ref"`
@@ -78,9 +72,9 @@ func (t *jobEventType) NewMetric() telegraf.Metric {
 		"job_id":              t.BuildID,
 		"before_sha":          t.BeforeSha,
 		"sha":                 t.Sha,
-		"job_created_at":      gitLabTimeToTime(t.BuildCreatedAt),
-		"job_started_at":      gitLabTimeToTime(t.BuildStartedAt),
-		"job_finished_at":     gitLabTimeToTime(t.BuildFinishedAt),
+		"job_created_at":      t.BuildCreatedAt,
+		"job_started_at":      t.BuildStartedAt,
+		"job_finished_at":     t.BuildFinishedAt,
 		"job_duration":        t.BuildDuration,
 		"job_queued_duration": t.BuildQueuedDuration,
 	}
@@ -267,8 +261,8 @@ func (t *pipelineEventType) NewMetric() telegraf.Metric {
 		"ref":                  t.ObjectAttributes.Ref,
 		"before_sha":           t.ObjectAttributes.BeforeSha,
 		"sha":                  t.ObjectAttributes.Sha,
-		"pipeline_created_at":  gitLabTimeToTime(t.ObjectAttributes.CreatedAt),
-		"pipeline_finished_at": gitLabTimeToTime(t.ObjectAttributes.FinishedAt),
+		"pipeline_created_at":  t.ObjectAttributes.CreatedAt,
+		"pipeline_finished_at": t.ObjectAttributes.FinishedAt,
 		"pipeline_duration":    t.ObjectAttributes.Duration,
 		"url":                  t.ObjectAttributes.URL,
 	}
@@ -396,8 +390,8 @@ func (t *mergeRequestEventType) NewMetric() telegraf.Metric {
 		"title":         t.ObjectAttributes.Title,
 		"source_branch": t.ObjectAttributes.SourceBranch,
 		"description":   t.ObjectAttributes.Description,
-		"created_at":    gitLabTimeToTime(t.ObjectAttributes.CreatedAt),
-		"updated_at":    gitLabTimeToTime(t.ObjectAttributes.UpdatedAt),
+		"created_at":    t.ObjectAttributes.CreatedAt,
+		"updated_at":    t.ObjectAttributes.UpdatedAt,
 		"url":           t.ObjectAttributes.URL,
 	}
 	n := metric.New(gitlabWebhooks, tags, fields, time.Now())

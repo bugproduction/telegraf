@@ -39,7 +39,6 @@ func GitlabWebhookRequest(t *testing.T, input string, xGitlabEvent string) {
 	if !acc.HasMeasurement(testGitlab_webhooks) {
 		t.Errorf("no measurement")
 	}
-
 }
 
 func GitlabWebhookRequestToken(t *testing.T, input string, xGitlabEvent string, token string) (int, testutil.Accumulator) {
