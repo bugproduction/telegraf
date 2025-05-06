@@ -17,7 +17,7 @@ type event interface {
 // ########################################
 
 const gitlabWebhooks = "gitlab_webhooks"
-const jobEvents = "job_event"
+const jobEvent = "job_event"
 
 type jobEventType struct {
 	ObjectKind          string      `json:"object_kind"`
@@ -50,26 +50,21 @@ type jobEventType struct {
 
 func (t *jobEventType) NewMetric() telegraf.Metric {
 	tags := map[string]string{
-		"event":              jobEvents,
+		"event":              jobEvent,
 		"job_name":           t.BuildName,
 		"job_stage":          t.BuildStage,
 		"job_status":         t.BuildStatus,
 		"job_failure_reason": t.BuildFailureReason,
 		"allow_failure":      strconv.FormatBool(t.BuildAllowFailure),
 		"is_tag":             strconv.FormatBool(t.Tag),
-		"retries":            strconv.Itoa(t.RetriesCount),
 		"project_id":         strconv.Itoa(t.Project.ID),
-		"project_name":       t.Project.Name,
 		"user_id":            strconv.Itoa(t.User.ID),
-		"user_name":          t.User.Name,
 		"runner_id":          strconv.Itoa(t.Runner.ID),
-		"runner_description": t.Runner.Description,
-		"environment":        t.Environment.Name,
 	}
 	fields := map[string]interface{}{
+		"job_id":              t.BuildID,
 		"pipeline_id":         t.PipelineID,
 		"ref":                 t.Ref,
-		"job_id":              t.BuildID,
 		"before_sha":          t.BeforeSha,
 		"sha":                 t.Sha,
 		"job_created_at":      t.BuildCreatedAt,
@@ -148,7 +143,7 @@ type commit struct {
 // Pipeline hook event
 // ########################################
 
-const pipelineEvents = "pipeline_event"
+const pipelineEvent = "pipeline_event"
 
 type pipelineEventType struct {
 	ObjectKind       string           `json:"object_kind"`
@@ -248,12 +243,11 @@ type artifactsFile struct {
 
 func (t *pipelineEventType) NewMetric() telegraf.Metric {
 	tags := map[string]string{
-		"event":           pipelineEvents,
+		"event":           pipelineEvent,
 		"pipeline_status": t.ObjectAttributes.Status,
+		"pipeline_source": t.ObjectAttributes.Source,
 		"project_id":      strconv.Itoa(t.Project.ID),
-		"project_name":    t.Project.Name,
 		"user_id":         strconv.Itoa(t.User.ID),
-		"user_name":       t.User.Username,
 	}
 	fields := map[string]interface{}{
 		"pipeline_id":          t.ObjectAttributes.ID,
@@ -264,7 +258,6 @@ func (t *pipelineEventType) NewMetric() telegraf.Metric {
 		"pipeline_created_at":  t.ObjectAttributes.CreatedAt,
 		"pipeline_finished_at": t.ObjectAttributes.FinishedAt,
 		"pipeline_duration":    t.ObjectAttributes.Duration,
-		"url":                  t.ObjectAttributes.URL,
 	}
 	n := metric.New(gitlabWebhooks, tags, fields, time.Now())
 	return n
@@ -274,7 +267,7 @@ func (t *pipelineEventType) NewMetric() telegraf.Metric {
 // Merge request event
 // ########################################
 
-const mergeRequestEvents = "merge_request_event"
+const mergeRequestEvent = "merge_request_event"
 
 type label struct {
 	ID          int    `json:"id"`
@@ -373,26 +366,23 @@ type mergeRequestEventType struct {
 
 func (t *mergeRequestEventType) NewMetric() telegraf.Metric {
 	tags := map[string]string{
-		"event":                         mergeRequestEvents,
+		"event":                         mergeRequestEvent,
 		"project_id":                    strconv.Itoa(t.Project.ID),
-		"project_name":                  t.Project.Name,
 		"user_id":                       strconv.Itoa(t.User.ID),
-		"user_name":                     t.User.Name,
-		"target_branch":                 t.ObjectAttributes.TargetBranch,
 		"author_id":                     strconv.Itoa(t.ObjectAttributes.AuthorID),
 		"blocking_discussions_resolved": strconv.FormatBool(t.ObjectAttributes.BlockingDiscussionsResolved),
 		"work_in_progress":              strconv.FormatBool(t.ObjectAttributes.WorkInProgress),
 		"draft":                         strconv.FormatBool(t.ObjectAttributes.Draft),
-		"detailed_merge_status":         t.ObjectAttributes.DetailedMergeStatus,
+		"merge_status":                  t.ObjectAttributes.DetailedMergeStatus,
 	}
 	fields := map[string]interface{}{
-		"mr_id":         t.ObjectAttributes.ID,
-		"title":         t.ObjectAttributes.Title,
-		"source_branch": t.ObjectAttributes.SourceBranch,
-		"description":   t.ObjectAttributes.Description,
-		"created_at":    t.ObjectAttributes.CreatedAt,
-		"updated_at":    t.ObjectAttributes.UpdatedAt,
-		"url":           t.ObjectAttributes.URL,
+		"merge_request_id": t.ObjectAttributes.ID,
+		"title":            t.ObjectAttributes.Title,
+		"description":      t.ObjectAttributes.Description,
+		"source_branch":    t.ObjectAttributes.SourceBranch,
+		"target_branch":    t.ObjectAttributes.TargetBranch,
+		"created_at":       t.ObjectAttributes.CreatedAt,
+		"updated_at":       t.ObjectAttributes.UpdatedAt,
 	}
 	n := metric.New(gitlabWebhooks, tags, fields, time.Now())
 	return n

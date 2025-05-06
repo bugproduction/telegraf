@@ -26,10 +26,9 @@ The events will be stored in `gitlab_webhooks` measurement.
 Tags:
 - 'event' = `pipeline_event` string
 - 'pipeline_status' = `object_attributes.status` string
-- 'project_id' =  `project.id` int
-- 'project_name' = `project.name` string
-- 'user_id' = `user.id` int
-- 'user_name' = `user.username` string
+- 'pipeline_source' = `object_attributes.Source` string
+- 'project_id' =  `project.id` string
+- 'user_id' = `user.id` string
 
 Fields:
 - 'pipeline_id' = `object_attributes.id` int
@@ -40,7 +39,6 @@ Fields:
 - 'pipeline_created_at' = `object_attributes.created_at` string
 - 'pipeline_finished_at' = `object_attributes.finished_at` string
 - 'pipeline_duration' = `object_attributes.duration` int
-- 'url' = `object_attributes.url` string
 
 
 ### [Job events](https://docs.gitlab.com/user/project/integrations/webhook_events/#job-events)
@@ -51,21 +49,16 @@ Tags:
 - 'job_stage' = `build_stage` string
 - 'job_status' = `build_status` string
 - 'job_failure_reason' = `build_failure_reason` string
-- 'allow_failure' = `build_allow_failure` bool
-- 'is_tag' = `tag` bool
-- 'retries' = `retries_count` int
-- 'project_id' = `project.id` int
-- 'project_name' = `project.name` string
-- 'user_id' = `user.id` int
-- 'user_name' = `user.name` string
-- 'runner_id' = `runner.id` int
-- 'runner_description' = `runner.description` string
-- 'environment' = `environment.name` string
+- 'allow_failure' = `build_allow_failure` string
+- 'is_tag' = `tag` string
+- 'project_id' = `project.id` string
+- 'user_id' = `user.id` string
+- 'runner_id' = `runner.id` string
 
 Fields:
+- 'job_id' = `build_id` int
 - 'pipeline_id' = `pipeline_id` int
 - 'ref' = `ref` string
-- 'job_id' = `build_id` int
 - 'before_sha' = `before_sha` string
 - 'sha' = `sha` string
 - 'job_created_at' = `build_created_at` string
@@ -78,22 +71,19 @@ Fields:
 
 Tags:
 - 'event' = `merge_request_event` string
-- 'project_id' = `project.id` int
-- 'project_name' = `project.name` string
-- 'user_id' = `user.id` int
-- 'user_name' = `user.name` string
-- 'target_branch' = `object_attributes.target_branch` string
-- 'author_id' = `object_attributes.author_id` int
-- 'blocking_discussions_resolved' = `object_attributes.blocking_discussions_resolved` bool
-- 'work_in_progress' = `object_attributes.work_in_progress` bool
-- 'draft' = `object_attributes.draft` bool
-- 'detailed_merge_status' = `object_attributes.detailed_merge_status` string
+- 'project_id' = `project.id` string
+- 'user_id' = `user.id` string
+- 'author_id' = `object_attributes.author_id` string
+- 'blocking_discussions_resolved' = `object_attributes.blocking_discussions_resolved` string
+- 'work_in_progress' = `object_attributes.work_in_progress` string
+- 'draft' = `object_attributes.draft` string
+- 'merge_status' = `object_attributes.detailed_merge_status` string
 
 Fields:
-- 'mr_id' = `object_attributes.id` int
+- 'merge_request_id' = `object_attributes.id` int
 - 'title' = `object_attributes.title` string
-- 'source_branch' = `object_attributes.source_branch` string
 - 'description' = `object_attributes.description` string
+- 'source_branch' = `object_attributes.source_branch` string
+- 'target_branch' = `object_attributes.target_branch` string
 - 'created_at' = `object_attributes.created_at` string
 - 'updated_at' = `object_attributes.updated_at` string
-- 'url' = `object_attributes.url` string
